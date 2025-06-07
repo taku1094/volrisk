@@ -23,3 +23,5 @@ Imports:
 Suggests:
     testthat
 LazyData: true
+URL: https://github.com/taku1094/volrisk
+BugReports: https://github.com/taku1094/volrisk/issues
