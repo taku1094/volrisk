@@ -1,0 +1,21 @@
+#' @title Example Portfolio
+#' @description
+#' A synthetic insurance portfolio provided for testing and demonstration of package functionality.
+#' This dataset illustrates the structure and variables commonly used in life insurance modeling.
+#'
+#' @format A data frame with 50 rows and 12 variables:
+#' \describe{
+#'   \item{POL_ID}{Policy ID number}
+#'   \item{CLIENT_ID}{Client ID number}
+#'   \item{ISSUE_AGE}{Age of the insured at policy issue}
+#'   \item{GENDER}{Gender of the insured}
+#'   \item{DURATION}{Policy year of coverage}
+#'   \item{ATT_AGE}{Attained age in each duration}
+#'   \item{qx}{Mortality rate based on Japanese standard valuation table}
+#'   \item{FACE}{Face amount of the policy}
+#'   \item{RATE}{Premium rate applied}
+#'   \item{MORTALITY}{Actual assumed mortality rate}
+#'   \item{LAPSE}{Policy lapse rate}
+#'   \item{NAR}{Net amount at risk}
+#' }
+"example_portfolio"

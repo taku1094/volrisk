@@ -1,0 +1,25 @@
+Package: volrisk
+Type: Package
+Title: Simulation Tools for Life Reinsurance with Profit Commission
+Version: 0.1.0
+Authors@R: person("Yoshida", "Takuji", email = "t.yoshida.science.kyoto@gmail.com", role = c("aut", "cre"))
+Description: This package provides tools to simulate and evaluate stochastic scenarios of death and lapse events in life reinsurance contracts with profit commissions.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends: R (>= 4.1.0)
+Imports:
+    dplyr,
+    magrittr,
+    arrow,
+    parallel,
+    doSNOW,
+    foreach,
+    progress,
+    data.table,
+    stringr,
+    rstudioapi
+Suggests:
+    testthat
+LazyData: true
