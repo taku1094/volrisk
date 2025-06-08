@@ -17,7 +17,7 @@ The **volrisk** package provides simulation tools for modeling stochastic cash f
 
 ```r
 # Install from GitHub
-devtools::install_github("your-username/volrisk")
+devtools::install_github("taku1094/volrisk")
 library(volrisk)
 ```
 

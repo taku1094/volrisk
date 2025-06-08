@@ -126,8 +126,8 @@ simulation <- function(df, n_sim = NULL, split = NULL, seed = NULL, output_forma
   seed_for_death <- matrix(as.integer(runif(Number_of_CLIENT * split, min = 1, max = .Machine$integer.max)), nrow = split, byrow = TRUE)
 
   start_time <- Sys.time()
-  is_check <- identical(Sys.getenv("_R_CHECK_LIMIT_CORES_"), "TRUE")
-  cores <- if (is_check) 2 else parallel::detectCores()
+  is_check <- identical(tolower(Sys.getenv("_R_CHECK_LIMIT_CORES_")), "true")
+  cores <- if (is_check) 2L else parallel::detectCores()
   cl <- parallel::makeCluster(cores)
   doSNOW::registerDoSNOW(cl)
   parallel::clusterExport(cl, c("MAX_DURATION", "n_sim", "Number_of_POL",
@@ -146,7 +146,7 @@ simulation <- function(df, n_sim = NULL, split = NULL, seed = NULL, output_forma
   result <- foreach::foreach(
     i = 1:split,
     .options.snow = opts,
-    .packages = c("tidyverse","data.table", "readxl", "arrow", "stringr"),
+    .packages = c("data.table", "arrow", "stringr"),
     .inorder = FALSE
   ) %dopar% {
 
