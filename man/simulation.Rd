@@ -9,6 +9,7 @@ simulation(
   n_sim = NULL,
   split = NULL,
   seed = NULL,
+  sync_seed = TRUE,
   output_format = "csv",
   output_path = NULL
 )
@@ -21,6 +22,11 @@ simulation(
 \item{split}{Number of splits (simulation repetitions)}
 
 \item{seed}{Random seed (optional)}
+
+\item{sync_seed}{Logical flag (default = TRUE). If TRUE, ensures that all policies
+belonging to the same insured person use synchronized random seeds for death simulation,
+thereby ensuring consistent timing of death events across policies. This is critical
+for accurately capturing volatility risk arising from common mortality shocks.}
 
 \item{output_format}{Output file format: "csv" or "parquet"}
 

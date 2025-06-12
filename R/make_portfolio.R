@@ -43,8 +43,8 @@ make_portfolio <- function(data, cols = NULL) {
   )
 
   ask_colname <- function(key) {
-    cat("\nAvailable columns:\n")
-    cat(paste0("  - ", col_names), sep = "\n")
+    message("\nAvailable columns:")
+    message(paste0("  - ", col_names, collapse = "\n"))
     desc <- key_descriptions[[key]]
     readline(prompt = paste0("\nEnter column name for ", key, " [", desc, "] (type 'back' to go back): "))
   }
@@ -60,7 +60,7 @@ make_portfolio <- function(data, cols = NULL) {
 
       if (tolower(input) == "back") {
         if (i == 1) {
-          cat("Cannot go back from the first item.\n")
+          message("Cannot go back from the first item.")
           next
         } else {
           cols[[required_keys[i - 1]]] <- NULL
@@ -70,7 +70,7 @@ make_portfolio <- function(data, cols = NULL) {
       }
 
       if (!(input %in% col_names)) {
-        cat("Invalid input. Please enter one of the listed columns.\n")
+        message("Invalid input. Please enter one of the listed columns.")
       } else {
         cols[[key]] <- input
         i <- i + 1

@@ -10,6 +10,10 @@
 #' @param n_sim Number of simulations per split
 #' @param split Number of splits (simulation repetitions)
 #' @param seed Random seed (optional)
+#' @param sync_seed Logical flag (default = TRUE). If TRUE, ensures that all policies
+#'   belonging to the same insured person use synchronized random seeds for death simulation,
+#'   thereby ensuring consistent timing of death events across policies. This is critical
+#'   for accurately capturing volatility risk arising from common mortality shocks.
 #' @param output_format Output file format: "csv" or "parquet"
 #' @param output_path Path to save the simulation results and logs
 #'
@@ -46,7 +50,7 @@
 #'            output_format = "csv",
 #'            output_path = tempdir()
 #'            )
-simulation <- function(df, n_sim = NULL, split = NULL, seed = NULL, output_format = "csv", output_path = NULL) {
+simulation <- function(df, n_sim = NULL, split = NULL, seed = NULL, sync_seed = TRUE, output_format = "csv", output_path = NULL) {
   `%dopar%` <- foreach::`%dopar%`
 
   required_cols <- c("unique_id", "client_id", "duration", "mortality", "lapse", "nar", "rate")
@@ -65,7 +69,7 @@ simulation <- function(df, n_sim = NULL, split = NULL, seed = NULL, output_forma
     if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable()) {
       output_path <- rstudioapi::selectDirectory(caption = "Select folder to save output files")
     } else {
-      cat("Please enter the full path to the directory where you want to save the output files:\n")
+      message("Please enter the full path to the directory where you want to save the output files:")
       output_path <- readline(prompt = "Path: ")
     }
     if (!dir.exists(output_path)) {
@@ -76,11 +80,6 @@ simulation <- function(df, n_sim = NULL, split = NULL, seed = NULL, output_forma
   result_path <- file.path(output_path, "result")
   if (!dir.exists(result_path)) {
     dir.create(result_path)
-  }
-
-  if (is.null(seed)) {
-    seed <- as.integer(as.numeric(Sys.time())) %% .Machine$integer.max
-    message("Seed not provided. Using generated seed: ", seed)
   }
 
   if (!(output_format %in% c("csv", "parquet"))) {
@@ -121,7 +120,9 @@ simulation <- function(df, n_sim = NULL, split = NULL, seed = NULL, output_forma
   UPPER_TRI <- matrix(0, MAX_DURATION + 1, MAX_DURATION + 1)
   UPPER_TRI[upper.tri(UPPER_TRI, diag = TRUE)] <- 1
 
-  set.seed(seed)
+  if(!is.null(seed)){
+    set.seed(seed)
+  }
   seed_for_lapse <- matrix(as.integer(runif(Number_of_POL * split, min = 1, max = .Machine$integer.max)), nrow = split, byrow = TRUE)
   seed_for_death <- matrix(as.integer(runif(Number_of_CLIENT * split, min = 1, max = .Machine$integer.max)), nrow = split, byrow = TRUE)
 
@@ -154,9 +155,9 @@ simulation <- function(df, n_sim = NULL, split = NULL, seed = NULL, output_forma
     TOTAL_CLAIM <- matrix(0, MAX_DURATION, n_sim)
 
     for(number in 1:Number_of_POL){
-      set.seed(seed_for_death[i, POL_CLIENT_MAPPING[[number]]])
+      if (sync_seed) set.seed(seed_for_death[i, POL_CLIENT_MAPPING[[number]]])
       D <- rmultinom(n_sim, 1, DTH[[number]])
-      set.seed(seed_for_lapse[i, number])
+      if (sync_seed) set.seed(seed_for_lapse[i, number])
       W <- rmultinom(n_sim, 1, LAP[[number]])
       R <- (UPPER_TRI %*% D) * (UPPER_TRI %*% W)
       D <- D[-(MAX_DURATION + 1),]
